@@ -50,7 +50,17 @@ app.all("/api/showHello", (_req, res) => {
 });
 
 // === 메인 스킬: GET/POST 모두 JSON 반환 ===
+
 app.all("/api/majorCounsel", (req, res) => {
+
+  console.log(
+    "[REQ]",
+    req.method,
+    req.url,
+    req.headers["content-type"],
+    JSON.stringify(req.body || {})
+  );
+
   try {
     const deptName =
       req.body?.action?.params?.RISE_name ||
