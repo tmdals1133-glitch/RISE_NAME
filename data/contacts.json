@@ -1,0 +1,32 @@
+{
+  "AI웹툰애니계열": {
+    "prof": "최태신",
+    "phone": "010-1234-5678",
+    "openchat": "https://open.kakao.com/o/s5IzUcLh",
+    "homepage": "https://www.instagram.com/bsksinsta/"
+  },
+  "AI콘텐츠계열": {
+    "prof": "최태신",
+    "phone": "010-2345-6789",
+    "openchat": "https://open.kakao.com/o/s5IzUcLh",
+    "homepage": "https://www.instagram.com/bsksinsta/"
+  },
+  "미디어코스프레과": {
+    "prof": "최태신",
+    "phone": "010-3456-7890",
+    "openchat": "https://open.kakao.com/o/s5IzUcLh",
+    "homepage": "https://www.instagram.com/bsksinsta/"
+  },
+  "펫크리에이터과": {
+    "prof": "",
+    "phone": "010-4567-8901",
+    "openchat": "https://open.kakao.com/o/s5IzUcLh",
+    "homepage": "https://www.instagram.com/bsksinsta/"
+  },
+  "스마트디저트과": {
+    "prof": "홍서형",
+    "phone": "010-5678-9012",
+    "openchat": "https://open.kakao.com/o/s5IzUcLh",
+    "homepage": "https://www.instagram.com/bsksinsta/"
+  }
+}
