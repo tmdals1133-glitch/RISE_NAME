@@ -61,6 +61,12 @@ app.post("/api/majorCounsel", (req, res) => {
     "";
 
   const info = DEPT[deptName];
+  
+  // GET 요청이 들어왔을 때 안내
+app.get("/api/majorCounsel", (req, res) => {
+  res.status(405).send("이 API는 POST 방식만 지원합니다. JSON 형식으로 호출하세요.");
+});
+
 
   if (!info) {
     const quickReplies = Object.keys(DEPT)
