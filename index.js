@@ -1,24 +1,71 @@
-// ✅ Accept both POST & GET and always return Kakao JSON
+// index.js
+const express = require("express");
+const fs = require("fs");
+const path = require("path");
+
+const app = express();
+app.use(express.json());
+
+// === contacts.json 로드 ===
+const contactsPath = path.join(__dirname, "data", "contacts.json");
+let DEPT = {};
+function loadContacts() {
+  try {
+    const raw = fs.readFileSync(contactsPath, "utf8");
+    DEPT = JSON.parse(raw);
+    console.log(`[INIT] Loaded ${Object.keys(DEPT).length} departments`);
+  } catch (e) {
+    console.error("[ERROR] Failed to load contacts.json:", e.message);
+    DEPT = {};
+  }
+}
+loadContacts();
+
+// === 헬스체크 ===
+app.get("/health", (_req, res) => res.status(200).send("OK"));
+
+// === 샘플 엔드포인트 ===
+app.all("/api/sayHello", (_req, res) => {
+  res.json({
+    version: "2.0",
+    template: { outputs: [{ simpleText: { text: "안녕" } }] }
+  });
+});
+
+app.all("/api/showHello", (_req, res) => {
+  res.json({
+    version: "2.0",
+    template: {
+      outputs: [
+        {
+          simpleImage: {
+            imageUrl:
+              "https://t1.kakaocdn.net/kakaocorp/kakaocorp/admin/brand/brandCharacter/ryan.png",
+            altText: "라이언이 손을 흔들어요"
+          }
+        }
+      ]
+    }
+  });
+});
+
+// === 메인 스킬: GET/POST 모두 JSON 반환 ===
 app.all("/api/majorCounsel", (req, res) => {
   try {
-    // 1) 학과명 추출 (POST 바디 or GET 쿼리 모두 지원)
     const deptName =
       req.body?.action?.params?.RISE_name ||
       req.body?.action?.detailParams?.RISE_name?.value ||
-      req.query?.RISE_name || // e.g. /api/majorCounsel?RISE_name=AI웹툰애니계열
+      req.query?.RISE_name ||
       "";
 
-    // 2) 학과 정보 조회
     const info = DEPT[deptName];
 
-    // 3) 공통 응답 헬퍼
     const kakaoText = (text) => ({
       version: "2.0",
       template: { outputs: [{ simpleText: { text } }] }
     });
 
     if (!deptName) {
-      // 바디/쿼리에 아무 값도 못 받았을 때도 JSON으로 안내
       return res.json(
         kakaoText(
           "학과명을 인식하지 못했어요 😥\n'웹툰', '펫', '디저트'처럼 키워드로 다시 물어봐 주세요."
@@ -27,7 +74,6 @@ app.all("/api/majorCounsel", (req, res) => {
     }
 
     if (!info) {
-      // 학과 매칭 실패 시도 JSON 안내 + 퀵버튼
       const quickReplies = Object.keys(DEPT).slice(0, 8).map((name) => ({
         action: "message",
         label: name,
@@ -50,7 +96,6 @@ app.all("/api/majorCounsel", (req, res) => {
       });
     }
 
-    // 4) 정상 카드 응답
     const desc =
       `안녕하세요! ${deptName}에 관심 가져주셔서 감사합니다 😊\n` +
       `해당 전공에 대한 궁금증은 아래 담당 교수님께 1:1 상담 요청하실 수 있습니다.\n\n` +
@@ -87,19 +132,17 @@ app.all("/api/majorCounsel", (req, res) => {
     });
   } catch (e) {
     console.error("[majorCounsel] error:", e);
-    // 예외 발생해도 반드시 카카오 JSON으로 응답
     return res.json({
       version: "2.0",
       template: {
         outputs: [
-          {
-            simpleText: {
-              text:
-                "요청 처리 중 오류가 발생했어요 😥 잠시 후 다시 시도해 주세요."
-            }
-          }
+          { simpleText: { text: "요청 처리 중 오류가 발생했어요 😥 잠시 후 다시 시도해 주세요." } }
         ]
       }
     });
   }
 });
+
+// === 포트 바인딩 ===
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Skill server listening on ${PORT}`));
